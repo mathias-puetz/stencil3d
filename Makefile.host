@@ -1,0 +1,24 @@
+	CC:=clang
+	CXX:=clang++
+	OMPI_MPICC=clang
+	OMPI_MPICXX=clang++
+	TFLAGS:= -march=znver3
+	TFLAGS:= -march=sapphirerapids
+	CFLAGS:=-g -O3 -fopenmp $(DEFINES) $(TFLAGS) # -DSCHED_STATIC # -DERR_PRINT
+	LDFLAGS:= -lm
+	INCLUDES:=config.h iterators.h grid.h stencil_2.h stencil_7.h stencil_13.h stencil_25.h stencils.h aux.h
+	SOURCES:=main.cpp iterators.cpp gilbert2d.cpp grid.cpp aux.cpp
+	OBJECTS:=$(SOURCES:%.cpp=%.o)
+
+all: hstencil3d
+
+$(OBJECTS): $(INCLUDES)
+
+$(OBJECTS):%.o:%.cpp
+	$(CXX) $(CFLAGS) -c $< -o $@
+
+hstencil3d: $(OBJECTS)
+	$(CXX) $(CFLAGS) -o $@ $(OBJECTS) $(LDFLAGS)
+
+clean:
+	rm hstencil3d $(OBJECTS)
